@@ -1,0 +1,21 @@
+--- # Quick ansible playbook for downloading liquibase
+- name: download liquibase using ansible
+  hosts: dbservers
+  connection: ssh
+  sudo: yes
+  user: mysqluser
+  tasks:
+  - name: Create liquibase directory
+    file: 
+      name: /opt/liquibase
+      state: directory
+      mode: 0755
+  - name: install liquibase
+    unarchive:
+      src: https://github.com/liquibase/liquibase/releases/download/liquibase-parent-{{ liquibase_version }}/liquibase-{{ liquibase_version }}-bin.tar.gz
+      dest: /opt/liquibase
+      copy: no
+      mode: 0755
+      creates: /opt/liquibase/liquibase
+  - name: add liquibase to PATH
+    raw: PATH=/opt/liquibase:$PATH 
